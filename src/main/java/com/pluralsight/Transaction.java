@@ -1,6 +1,4 @@
 package com.pluralsight;
-
-//Big decimal is a new thing i have discovered while doing my project.
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,8 +10,8 @@ public class Transaction {
     private String vendor;
     private BigDecimal amount;
 
-//___________________Constructor:_____________________________________________________________________________
-    public Transaction(BigDecimal amount, String vendor, String description, LocalTime time, LocalDate date) {
+//___________________Constructor:__________________
+public Transaction(LocalDate date, LocalTime time, String description, String vendor, BigDecimal amount) {
         this.amount = amount;
         this.vendor = vendor;
         this.description = description;
@@ -21,8 +19,7 @@ public class Transaction {
         this.date = date;
     }
 
-    //__________________toString()_____________________________________________
-    @Override
+    //__________________toString()____________________
     public String toString() {
         return "Transaction{" +
                 "date=" + date +
@@ -32,7 +29,7 @@ public class Transaction {
                 ", amount=" + amount +
                 '}';
     }
-//_____________________________Getters_______________________________________
+//_____________________________Getters_______________
     public BigDecimal getAmount() {
         return amount;
     }
@@ -51,5 +48,26 @@ public class Transaction {
 
     public LocalDate getDate() {
         return date;
+    }
+    //__________________Setters:____________________
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }
