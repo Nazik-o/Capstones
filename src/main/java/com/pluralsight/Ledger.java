@@ -1,24 +1,27 @@
 package com.pluralsight;
 import java.io.*;
-import java.math.BigDecimal;
+import java.math.BigDecimal;//for money amounts (+/-) more accurate than double
 import java.nio.file.*;
 import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+//This part of the program is basically the brain
 public class Ledger {
     private final List<Transaction> transactions = new ArrayList<>();
     private final String filePath = "data/transactions.csv";
 
+    //it loads data from the CSV.
     public Ledger() {
         loadFromFile();
     }
-
+// adds the transaction and stores back to Csv
     public void addTransaction(Transaction t) {
         transactions.add(t);
         saveToFile();
     }
 
+//loads and reads every line in csv file and splits it
     public void loadFromFile() {
         transactions.clear();
         Path path = Paths.get(filePath);
@@ -47,7 +50,7 @@ public class Ledger {
         }
 
     }
-
+//writes each transaction back into Csv
     public void saveToFile() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath))) {
             for (Transaction t : transactions) {
@@ -70,13 +73,13 @@ public class Ledger {
                         .thenComparing(Transaction::getTime).reversed())
                 .forEach(System.out::println);
     }
-
+//Filter only deposits (amount > 0)
     public void showDeposits() {
         transactions.stream()
                 .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) > 0)
                 .forEach(System.out::println);
     }
-
+//Filter only payments (amount < 0)
     public void showPayments() {
         transactions.stream()
                 .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
@@ -135,6 +138,8 @@ public class Ledger {
                 .filter(t -> t.getVendor().toLowerCase().contains(vendor))
                 .forEach(System.out::println);
     }
+
+    //Bonus : custom search
     public void customSearch(Scanner scanner) {
         System.out.print("Start date (yyyy-mm-dd or blank): ");
         String startInput = scanner.nextLine();

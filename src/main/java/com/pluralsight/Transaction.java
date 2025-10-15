@@ -1,16 +1,24 @@
+//Importing needed libraries for usage
 package com.pluralsight;
-import java.math.BigDecimal;
+import java.math.BigDecimal;//for money amounts (+/-) more accurate than double
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+//Creating a class for Transactions
 public class Transaction {
+    //Date of transaction (example: 2025-10-14)
     private LocalDate date;
+    //Time of transaction(example: 10:30:00)
     private LocalTime time;
+    //Description for  what transactions is for
     private String description;
+    //To see if , from whom the money was paid to or received from
     private String vendor;
+    //Used BigDecimal to store both positive and negative: deposits or payments
     private BigDecimal amount;
 
-//___________________Constructor:__________________
+//___________________Constructor:_________________
+//Used to call when creating a new Transaction object
 public Transaction(LocalDate date, LocalTime time, String description, String vendor, BigDecimal amount) {
         this.amount = amount;
         this.vendor = vendor;
@@ -20,6 +28,7 @@ public Transaction(LocalDate date, LocalTime time, String description, String ve
     }
 
     //__________________toString()____________________
+    //To have a readable  string when the transaction is printed
     public String toString() {
         return "Transaction{" +
                 "date=" + date +
@@ -29,7 +38,8 @@ public Transaction(LocalDate date, LocalTime time, String description, String ve
                 ", amount=" + amount +
                 '}';
     }
-//_____________________________Getters_______________
+//_____________Getters_______________
+//To allow other classes to access these values, so basically look at it
     public BigDecimal getAmount() {
         return amount;
     }
@@ -49,7 +59,8 @@ public Transaction(LocalDate date, LocalTime time, String description, String ve
     public LocalDate getDate() {
         return date;
     }
-    //__________________Setters:____________________
+    //_____________Setters:________________
+    //To allow other classes to modify these values if needed, in other words change it
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
