@@ -17,28 +17,22 @@ public class Transaction {
     //Used BigDecimal to store both positive and negative: deposits or payments
     private BigDecimal amount;
 
-//___________________Constructor:_________________
+//___________________CONSTRUCTOR:_________________
 //Used to call when creating a new Transaction object
 public Transaction(LocalDate date, LocalTime time, String description, String vendor, BigDecimal amount) {
-        this.amount = amount;
-        this.vendor = vendor;
-        this.description = description;
-        this.time = time;
+
         this.date = date;
+        this.time = time;
+        this.description = description;
+        this.vendor = vendor;
+        this.amount = amount;
+
+
+
+
     }
 
-    //__________________toString()____________________
-    //To have a readable  string when the transaction is printed
-    public String toString() {
-        return "Transaction{" +
-                "date=" + date +
-                ", time=" + time +
-                ", description='" + description + '\'' +
-                ", vendor='" + vendor + '\'' +
-                ", amount=" + amount +
-                '}';
-    }
-//_____________Getters_______________
+//_____________GETTERS_______________
 //To allow other classes to access these values, so basically look at it
     public BigDecimal getAmount() {
         return amount;
@@ -59,7 +53,7 @@ public Transaction(LocalDate date, LocalTime time, String description, String ve
     public LocalDate getDate() {
         return date;
     }
-    //_____________Setters:________________
+    //_____________SETTERS:________________
     //To allow other classes to modify these values if needed, in other words change it
 
     public void setAmount(BigDecimal amount) {
@@ -80,5 +74,16 @@ public Transaction(LocalDate date, LocalTime time, String description, String ve
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+    //__________________toString()____________________
+    //To have a readable  string when the transaction is printed
+    public String toString() {
+        return "Transaction{" +
+                "date=" + date +
+                ", time=" + time +
+                ", description='" + description + '\'' +
+                ", vendor='" + vendor + '\'' +
+                ", amount=" + amount +
+                '}';
     }
 }

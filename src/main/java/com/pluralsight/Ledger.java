@@ -1,165 +1,151 @@
 package com.pluralsight;
-import java.io.*;
-import java.math.BigDecimal;//for money amounts (+/-) more accurate than double
-import java.nio.file.*;
-import java.time.*;
-import java.util.*;
-import java.util.stream.Collectors;
 
-//This part of the program is basically the brain
+import java.io.*;                // for file reading and writing
+import java.math.BigDecimal;     // for precise money values
+import java.time.LocalDate;      // for date handling
+import java.time.LocalTime;      // for time handling
+import java.util.ArrayList;      // for dynamic list of transactions
+import java.util.List;           // interface for ArrayList
+
+// The Ledger class manages all transactions — it loads from file, stores in memory, saves back, and displays results.
 public class Ledger {
-    private final List<Transaction> transactions = new ArrayList<>();
+
+    // List to store all Transaction objects in memory while the program runs
+    private List<Transaction> transactions = new ArrayList<>();
+
+    // File path to where our transactions will be stored
     private final String filePath = "data/transactions.csv";
 
-    //it loads data from the CSV.
+    // Constructor — automatically loads transactions from the file when Ledger object is created
     public Ledger() {
         loadFromFile();
     }
-// adds the transaction and stores back to Csv
+
+    // Adds a new transaction to the list and then saves all transactions back to the CSV file
     public void addTransaction(Transaction t) {
         transactions.add(t);
         saveToFile();
     }
 
-//loads and reads every line in csv file and splits it
+    // Loads all transactions from the CSV file
     public void loadFromFile() {
-        transactions.clear();
-        Path path = Paths.get(filePath);
+        transactions.clear(); // Clear the list to avoid duplicate entries when reloading
 
-        if (!Files.exists(path)) {
-            System.out.println(" No existing transaction file found.");
-            return;
-        }
+        try {
+            // Create the file object
+            File file = new File(filePath);
 
-        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            // If the file doesn’t exist yet, show a message and stop loading
+            if (!file.exists()) {
+                System.out.println("No existing transaction file found.");
+                return;
+            }
+
+            // Set up file reader and buffered reader to read line by line
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
+
             String line;
+            // Keep reading until we reach the end of the file
             while ((line = reader.readLine()) != null) {
+                // Split the line by "|" symbol into 5 parts
                 String[] parts = line.split("\\|");
+
+                // Check if the line has exactly 5 pieces of data
                 if (parts.length == 5) {
-                    LocalDate date = LocalDate.parse(parts[0]);
-                    LocalTime time = LocalTime.parse(parts[1]);
-                    String description = parts[2];
-                    String vendor = parts[3];
-                    BigDecimal amount = new BigDecimal(parts[4]);
-                    transactions.add(new Transaction(date, time, description, vendor, amount));
+                    LocalDate date = LocalDate.parse(parts[0]);   // Convert text into LocalDate
+                    LocalTime time = LocalTime.parse(parts[1]);   // Convert text into LocalTime
+                    String description = parts[2];                // Get description text
+                    String vendor = parts[3];                     // Get vendor text
+                    BigDecimal amount = new BigDecimal(parts[4]); // Convert string to BigDecimal for money
+
+                    // Create a new Transaction object and add it to our list
+                    Transaction t = new Transaction(date, time, description, vendor, amount);
+                    transactions.add(t);
                 }
             }
-            System.out.println(" Transactions loaded from file.");
-        } catch (IOException e) {
-            System.out.println(" Error loading transactions: " + e.getMessage());
-        }
 
+            reader.close(); // Always close the file when done
+            System.out.println("Transactions loaded successfully from file.");
+
+        } catch (IOException e) {
+            System.out.println("Error loading transactions: " + e.getMessage());
+        }
     }
-//writes each transaction back into Csv
+
+    // Saves all transactions from memory back into the CSV file
     public void saveToFile() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get(filePath))) {
-            for (Transaction t : transactions) {
-                writer.write(String.join("|",
-                        t.getDate().toString(),
-                        t.getTime().toString(),
-                        t.getDescription(),
-                        t.getVendor(),
-                        t.getAmount().toString()));
-                writer.newLine();
+        try {
+            // Create a folder called 'data' if it doesn't exist
+            File folder = new File("data");
+            if (!folder.exists()) {
+                folder.mkdir();
             }
+
+            // Create or open the file for writing
+            FileWriter fw = new FileWriter(filePath);
+            BufferedWriter writer = new BufferedWriter(fw);
+
+            // Write each transaction as one line in the file
+            for (Transaction t : transactions) {
+                writer.write(
+                        t.getDate() + "|" +
+                                t.getTime() + "|" +
+                                t.getDescription() + "|" +
+                                t.getVendor() + "|" +
+                                t.getAmount()
+                );
+                writer.newLine(); // Move to the next line after each transaction
+            }
+
+            writer.close(); // Always close writer to save changes
+            System.out.println("Transactions saved successfully to file.");
+
         } catch (IOException e) {
             System.out.println("Error saving transactions: " + e.getMessage());
         }
     }
 
+    // Displays all transactions in the ledger
     public void showAll() {
-        transactions.stream()
-                .sorted(Comparator.comparing(Transaction::getDate).reversed()
-                        .thenComparing(Transaction::getTime).reversed())
-                .forEach(System.out::println);
+        if (transactions.isEmpty()) {
+            System.out.println("No transactions to display.");
+            return;
+        }
+
+        System.out.println("\n--- ALL TRANSACTIONS ---");
+        for (Transaction t : transactions) {
+            System.out.println(t);
+        }
     }
-//Filter only deposits (amount > 0)
+
+    // Shows only deposits (where amount > 0)
     public void showDeposits() {
-        transactions.stream()
-                .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) > 0)
-                .forEach(System.out::println);
+        System.out.println("\n--- DEPOSITS ---");
+        for (Transaction t : transactions) {
+            if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                System.out.println(t);
+            }
+        }
     }
-//Filter only payments (amount < 0)
+
+    // Shows only payments (where amount < 0)
     public void showPayments() {
-        transactions.stream()
-                .filter(t -> t.getAmount().compareTo(BigDecimal.ZERO) < 0)
-                .forEach(System.out::println);
+        System.out.println("\n--- PAYMENTS ---");
+        for (Transaction t : transactions) {
+            if (t.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+                System.out.println(t);
+            }
+        }
     }
 
+    // Shows all transactions for a specific vendor name
     public void showByVendor(String vendor) {
-        transactions.stream()
-                .filter(t -> t.getVendor().equalsIgnoreCase(vendor))
-                .forEach(System.out::println);
+        System.out.println("\n--- TRANSACTIONS FOR VENDOR: " + vendor + " ---");
+        for (Transaction t : transactions) {
+            if (t.getVendor().equalsIgnoreCase(vendor)) {
+                System.out.println(t);
+            }
+        }
     }
-    public void reportMonthToDate() {
-        LocalDate today = LocalDate.now();
-        LocalDate startOfMonth = today.withDayOfMonth(1);
-
-        transactions.stream()
-                .filter(t -> !t.getDate().isBefore(startOfMonth))
-                .sorted(Comparator.comparing(Transaction::getDate).reversed())
-                .forEach(System.out::println);
-    }
-
-    public void reportPreviousMonth() {
-        LocalDate today = LocalDate.now();
-        LocalDate firstOfThisMonth = today.withDayOfMonth(1);
-        LocalDate firstOfLastMonth = firstOfThisMonth.minusMonths(1);
-        LocalDate lastOfLastMonth = firstOfThisMonth.minusDays(1);
-
-        transactions.stream()
-                .filter(t -> !t.getDate().isBefore(firstOfLastMonth) && !t.getDate().isAfter(lastOfLastMonth))
-                .sorted(Comparator.comparing(Transaction::getDate).reversed())
-                .forEach(System.out::println);
-    }
-
-    public void reportYearToDate() {
-        LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
-
-        transactions.stream()
-                .filter(t -> !t.getDate().isBefore(startOfYear))
-                .sorted(Comparator.comparing(Transaction::getDate).reversed())
-                .forEach(System.out::println);
-    }
-
-    public void reportPreviousYear() {
-        int lastYear = LocalDate.now().minusYears(1).getYear();
-
-        transactions.stream()
-                .filter(t -> t.getDate().getYear() == lastYear)
-                .sorted(Comparator.comparing(Transaction::getDate).reversed())
-                .forEach(System.out::println);
-    }
-    public void searchByVendor(Scanner scanner) {
-        System.out.print("Enter vendor name: ");
-        String vendor = scanner.nextLine().trim().toLowerCase();
-
-        transactions.stream()
-                .filter(t -> t.getVendor().toLowerCase().contains(vendor))
-                .forEach(System.out::println);
-    }
-
-    //Bonus : custom search
-    public void customSearch(Scanner scanner) {
-        System.out.print("Start date (yyyy-mm-dd or blank): ");
-        String startInput = scanner.nextLine();
-        System.out.print("End date (yyyy-mm-dd or blank): ");
-        String endInput = scanner.nextLine();
-        System.out.print("Description (or blank): ");
-        String descInput = scanner.nextLine().toLowerCase();
-        System.out.print("Vendor (or blank): ");
-        String vendorInput = scanner.nextLine().toLowerCase();
-
-        LocalDate startDate = startInput.isEmpty() ? LocalDate.MIN : LocalDate.parse(startInput);
-        LocalDate endDate = endInput.isEmpty() ? LocalDate.MAX : LocalDate.parse(endInput);
-
-        transactions.stream()
-                .filter(t -> !t.getDate().isBefore(startDate) && !t.getDate().isAfter(endDate))
-                .filter(t -> descInput.isEmpty() || t.getDescription().toLowerCase().contains(descInput))
-                .filter(t -> vendorInput.isEmpty() || t.getVendor().toLowerCase().contains(vendorInput))
-                .forEach(System.out::println);
-    }
-
 }
-
-
