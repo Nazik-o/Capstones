@@ -6,6 +6,7 @@ import java.time.LocalDate;      // for date handling
 import java.time.LocalTime;      // for time handling
 import java.util.ArrayList;      // for dynamic list of transactions
 import java.util.List;           // interface for ArrayList
+import java.util.Scanner;
 
 // The Ledger class manages all transactions — it loads from file, stores in memory, saves back, and displays results.
 public class Ledger {
@@ -41,7 +42,7 @@ public class Ledger {
                 return;
             }
 
-            // Set up file reader and buffered reader to read line by line
+
             FileReader fr = new FileReader(file);
             BufferedReader reader = new BufferedReader(fr);
 
@@ -66,7 +67,7 @@ public class Ledger {
             }
 
             reader.close(); // Always close the file when done
-            System.out.println("Transactions loaded successfully from file.");
+
 
         } catch (IOException e) {
             System.out.println("Error loading transactions: " + e.getMessage());
@@ -146,6 +147,119 @@ public class Ledger {
             if (t.getVendor().equalsIgnoreCase(vendor)) {
                 System.out.println(t);
             }
+
         }
     }
+
+    // ______________REPORT METHODS________________________
+    // 1) Month To Date — shows all transactions from this month
+    public void reportMonthToDate() {
+        LocalDate today = LocalDate.now();
+        int currentMonth = today.getMonthValue();
+        int currentYear = today.getYear();
+
+        System.out.println("\n--- REPORT: MONTH TO DATE ---");
+        for (Transaction t : transactions) {
+            if (t.getDate().getMonthValue() == currentMonth && t.getDate().getYear() == currentYear) {
+                System.out.println(t);
+            }
+        }
+    }
+
+    // 2) Previous Month
+    public void reportPreviousMonth() {
+        LocalDate today = LocalDate.now();
+        int currentMonth = today.getMonthValue();
+        int currentYear = today.getYear();
+
+        int prevMonth = currentMonth - 1;
+        int yearOfPrevMonth = currentYear;
+
+        // If it's January, previous month is December of last year
+        if (prevMonth == 0) {
+            prevMonth = 12;
+            yearOfPrevMonth = currentYear - 1;
+        }
+
+        System.out.println("\n--- REPORT: PREVIOUS MONTH ---");
+        for (Transaction t : transactions) {
+            if (t.getDate().getMonthValue() == prevMonth &&
+                    t.getDate().getYear() == yearOfPrevMonth) {
+                System.out.println(t);
+            }
+        }
+    }
+
+    // 3) Year To Date
+    public void reportYearToDate() {
+        int currentYear = LocalDate.now().getYear();
+
+        System.out.println("\n--- REPORT: YEAR TO DATE ---");
+        for (Transaction t : transactions) {
+            if (t.getDate().getYear() == currentYear) {
+                System.out.println(t);
+            }
+        }
+    }
+
+    // 4) Previous Year
+    public void reportPreviousYear() {
+        int lastYear = LocalDate.now().getYear() - 1;
+
+        System.out.println("\n--- REPORT: PREVIOUS YEAR ---");
+        for (Transaction t : transactions) {
+            if (t.getDate().getYear() == lastYear) {
+                System.out.println(t);
+            }
+        }
+    }
+
+    // 5) Search by Vendor
+    public void searchByVendor(Scanner scanner) {
+        System.out.print("Enter vendor name to search: ");
+        String name = scanner.nextLine();
+
+        System.out.println("\n--- REPORT: SEARCH RESULTS FOR \"" + name + "\" ---");
+        for (Transaction t : transactions) {
+            if (t.getVendor().equalsIgnoreCase(name)) {
+                System.out.println(t);
+            }
+        }
+    }
+    //_______________Bonus part : CUSTOM SEARCH______________
+    public void customSearch(Scanner scanner) {
+        System.out.println("\n===============================");
+        System.out.println("         CUSTOM SEARCH          ");
+        System.out.println("===============================");
+
+        System.out.print("Enter a keyword to search (description/vendor/amount): ");
+        String keyword = scanner.nextLine().trim().toLowerCase();
+
+        boolean found = false;
+
+        for (int i = 0; i < transactions.size(); i++) {
+            // Get one transaction at a time from the list
+            Transaction t = transactions.get(i);
+
+            // Convert everything to lowercase for easy comparison
+            String description = t.getDescription().toLowerCase();
+            String vendor = t.getVendor().toLowerCase();
+            String amount = t.getAmount().toString();
+
+            // Check if the keyword appears in ANY of these fields
+            if (description.contains(keyword)
+                    || vendor.contains(keyword)
+                    || amount.contains(keyword)) {
+
+                // If a match is found, print the transaction
+                System.out.println(t);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No transactions found for keyword: " + keyword);
+        }
+    }
+
+
 }

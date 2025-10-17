@@ -1,4 +1,3 @@
-//Importing needed libraries for usage
 package com.pluralsight;
 import java.math.BigDecimal;//for money amounts (+/-) more accurate than double
 import java.time.LocalDate;
