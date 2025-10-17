@@ -261,49 +261,62 @@ public class Ledger {
         }
     }
     // _________________TRANSACTION SUMMARY__________________
-    //Custom preferance
+    //Custom preference: to see the total deposit and payments
     public void showTransactionSummary() {
+
+        // Count how many deposits and payments happened this month
         int deposits = 0;
         int payments = 0;
+        // Find the current month and year
+        LocalDate today = LocalDate.now();
+        int currentMonth = today.getMonthValue();
+        int currentYear = today.getYear();
 
-        // Count deposits and payments
+        // Go through all transactions in the file
         for (Transaction t : transactions) {
-            if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                deposits++;
-            } else if (t.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-                payments++;
+            // Only look at the transactions from this month and year
+            if (t.getDate().getMonthValue() == currentMonth && t.getDate().getYear() == currentYear) {
+
+                // If the amount is positive, it's a deposit
+                if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                    deposits++;
+                }
+                // If the amount is negative, it's a payment
+                else if (t.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+                    payments++;
+                }
+            }
+        }
+        // calculate the balance
+        BigDecimal balance = BigDecimal.ZERO;
+        for (Transaction t : transactions) {
+            if (t.getDate().getMonthValue() == currentMonth && t.getDate().getYear() == currentYear) {
+                balance = balance.add(t.getAmount());
             }
         }
 
+        // Add up all transactions (deposits + payments)
         int totalTransactions = deposits + payments;
 
+        // If you made more than 15 transactions this month, charge a $10 fee
+        if (totalTransactions > 15) {
+            System.out.println(" You went over the monthly transaction limit!");
+            BigDecimal fee = new BigDecimal("10.00");
+            balance = balance.subtract(fee);
+            System.out.println(" Fee applied: $10.00");
+        }
+
+        // Show the results on screen
         System.out.println("\n===============================");
         System.out.println("       TRANSACTION SUMMARY      ");
         System.out.println("===============================");
         System.out.println(" Deposits: " + deposits);
         System.out.println(" Payments: " + payments);
         System.out.println(" Total Transactions: " + totalTransactions);
-
-        // Calculate total balance
-        BigDecimal balance = BigDecimal.ZERO;
-        for (Transaction t : transactions) {
-            balance = balance.add(t.getAmount());
-        }
-
-        // Apply $10 fee if total > 20 transactions
-        BigDecimal fee = BigDecimal.ZERO;
-        if (totalTransactions > 20) {
-            fee = new BigDecimal("10.00");
-            balance = balance.subtract(fee);
-            System.out.println("️  Monthly transaction limit exceeded!");
-            System.out.println(" Fee Applied: $" + fee);
-        }
-
         System.out.println("-------------------------------");
         System.out.println("  Current Balance: $" + balance);
-        System.out.println("-------------------------------\n");
+        System.out.println("===============================\n");
     }
-
 
 
 }

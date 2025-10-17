@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.util.Scanner;
 
 // The HomeScreen class is the main menu of the Accounting Ledger program.
-// From here, users can add deposits, make payments, view the ledger, or exit the app.
 public class HomeScreen {
 
     // One Scanner for all user input
@@ -17,9 +16,9 @@ public class HomeScreen {
 
     // Displays the main home screen and waits for user input
     public static void showHome() {
-        System.out.println("$------------------$----------------$");
+        System.out.println("$++++++++++++++++++$----------------$");
         System.out.println("         Welcome to MoneyTalks!     ");
-        System.out.println("$------------------$----------------$");
+        System.out.println("$------------------$+++++++++++++++++$");
         System.out.println("Every penny tells a story...");
         System.out.print("\nWould you like to open your ledger? (Y/N): ");
         String response = scanner.nextLine().trim().toUpperCase();

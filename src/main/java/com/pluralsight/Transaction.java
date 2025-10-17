@@ -27,8 +27,6 @@ public Transaction(LocalDate date, LocalTime time, String description, String ve
         this.amount = amount;
 
 
-
-
     }
 
 //_____________GETTERS_______________
@@ -76,13 +74,11 @@ public Transaction(LocalDate date, LocalTime time, String description, String ve
     }
     //__________________toString()____________________
     //To have a readable  string when the transaction is printed
+    @Override
     public String toString() {
-        return "Transaction{" +
-                "date=" + date +
-                ", time=" + time +
-                ", description='" + description + '\'' +
-                ", vendor='" + vendor + '\'' +
-                ", amount=" + amount +
-                '}';
+        return date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
     }
+
+
 }
+
