@@ -260,6 +260,50 @@ public class Ledger {
             System.out.println("No transactions found for keyword: " + keyword);
         }
     }
+    // _________________TRANSACTION SUMMARY__________________
+    //Custom preferance
+    public void showTransactionSummary() {
+        int deposits = 0;
+        int payments = 0;
+
+        // Count deposits and payments
+        for (Transaction t : transactions) {
+            if (t.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                deposits++;
+            } else if (t.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+                payments++;
+            }
+        }
+
+        int totalTransactions = deposits + payments;
+
+        System.out.println("\n===============================");
+        System.out.println("       TRANSACTION SUMMARY      ");
+        System.out.println("===============================");
+        System.out.println(" Deposits: " + deposits);
+        System.out.println(" Payments: " + payments);
+        System.out.println(" Total Transactions: " + totalTransactions);
+
+        // Calculate total balance
+        BigDecimal balance = BigDecimal.ZERO;
+        for (Transaction t : transactions) {
+            balance = balance.add(t.getAmount());
+        }
+
+        // Apply $10 fee if total > 20 transactions
+        BigDecimal fee = BigDecimal.ZERO;
+        if (totalTransactions > 20) {
+            fee = new BigDecimal("10.00");
+            balance = balance.subtract(fee);
+            System.out.println("️  Monthly transaction limit exceeded!");
+            System.out.println(" Fee Applied: $" + fee);
+        }
+
+        System.out.println("-------------------------------");
+        System.out.println("  Current Balance: $" + balance);
+        System.out.println("-------------------------------\n");
+    }
+
 
 
 }

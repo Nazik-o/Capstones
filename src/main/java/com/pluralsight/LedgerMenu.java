@@ -20,6 +20,8 @@ public class LedgerMenu {
             System.out.println("P) Show Payments Only");
             System.out.println("V) Search by Vendor");
             System.out.println("R) Reports");
+            //Custom preferance to be able to see Transaction summary
+            System.out.println("S) Transaction Summary");
             System.out.println("B) Back to Main Menu");
             System.out.print("Choose an option: ");
 
@@ -43,6 +45,11 @@ public class LedgerMenu {
                 case "R":
                     showReportsMenu();
                     break;
+                    //my personal custom implementation
+                case "S":
+                    ledger.showTransactionSummary();
+                    break;
+
                 case "B":
                     viewing = false;
                     break;
