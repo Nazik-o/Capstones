@@ -8,7 +8,7 @@ import java.util.ArrayList;      // for dynamic list of transactions
 import java.util.List;           // interface for ArrayList
 import java.util.Scanner;
 
-// The Ledger class manages all transactions — it loads from file, stores in memory, saves back, and displays results.
+// The Ledger class manages all transactions:
 public class Ledger {
 
     // List to store all Transaction objects in memory while the program runs
@@ -17,7 +17,7 @@ public class Ledger {
     // File path to where our transactions will be stored
     private final String filePath = "data/transactions.csv";
 
-    // Constructor — automatically loads transactions from the file when Ledger object is created
+    // ________Constructor________
     public Ledger() {
         loadFromFile();
     }

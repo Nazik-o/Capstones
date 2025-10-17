@@ -13,14 +13,14 @@ public class LedgerMenu {
 
         while (viewing) {
             System.out.println("==========================");
-            System.out.println("        LEDGER MENU       ");
+            System.out.println("     < LEDGER MENU >      ");
             System.out.println("==========================");
             System.out.println("A) Show All Transactions");
             System.out.println("D) Show Deposits Only");
             System.out.println("P) Show Payments Only");
             System.out.println("V) Search by Vendor");
             System.out.println("R) Reports");
-            //Custom preferance to be able to see Transaction summary
+            //Custom preference to be able to see Transaction summary
             System.out.println("S) Transaction Summary");
             System.out.println("B) Back to Main Menu");
             System.out.print("Choose an option: ");

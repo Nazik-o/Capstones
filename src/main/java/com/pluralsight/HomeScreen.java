@@ -28,7 +28,7 @@ public class HomeScreen {
             System.out.println("\nGoodbye! Keep your money talking, not walking");
             return;
         }
-
+//To keep it interesting..
         System.out.println("\n...Loading your financial dashboard...");
 
 
@@ -46,7 +46,7 @@ public class HomeScreen {
             System.out.println("X) Exit");
             System.out.print("Choose an option: ");
 
-            // Read input, trim spaces, and convert to uppercase for easier comparison
+
             String choice = scanner.nextLine().trim().toUpperCase();
 
             // Classic switch statement (Java 8/11 compatible)

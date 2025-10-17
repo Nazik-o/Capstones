@@ -5,7 +5,7 @@ public class Start {
         // Call the HomeScreen class to start the main menu
         HomeScreen.showHome();
 
-        // When the user exits, this message appears
+        // When the user exits:
         System.out.println("\nThank you for using the MoneyTalks!");
     }
 }
